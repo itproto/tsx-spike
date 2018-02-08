@@ -40,8 +40,8 @@ export const $_1_$: React.ComponentClass<
 
   render() {
     const { handleIncrement } = this;
-    const { label } = this.props;
-    const { count } = this.state;
+    //const { label } = this.props;
+    //const { count } = this.state;
 
     return (
       <div>

@@ -179,8 +179,15 @@ module.exports = {
                     require("postcss-smart-import"),
                     require("postcss-cssnext"),
                     //require("precss"),
-                    require("postcss-simple-vars"),
-                    require("lost")
+                    require("postcss-simple-vars")
+                    //require("lost"),
+                    require("stylelint")({
+                      extends: "stylelint-config-standard",
+                      rules: []
+                    })
+                    /*require("postcss-reporter")({
+                      clearReportedMessages: false
+                    })*/
                   ]
                 }
               }

@@ -20,9 +20,10 @@ export class $_1_ extends React.Component<I$_1_Props, IState> {
   };
 
   render() {
-    const { handleIncrement } = this;
+    /* const { handleIncrement } = this;
     const { label } = this.props;
     const { count } = this.state;
+    */
 
     return <div>$_0_</div>;
   }

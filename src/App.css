@@ -21,6 +21,8 @@ $blue: #056ef0;
 }
 .App {
   text-align: center;
+  foo-bar: 33;
+  color: #4fd;
 
   & .App-header {
     background-color: $blue;
