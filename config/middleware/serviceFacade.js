@@ -19,9 +19,8 @@ function streamToJson(stream, cb) {
   });
 }
 
-function _proxy(req, res, url, method, body) {
-  const newUrl = "https://dog.ceo/api/" + url;
-  console.info(newUrl);
+function _proxy(req, res, route, cb) {
+  const newUrl = "https://dog.ceo/api/" + route;
   let r = request(newUrl);
   if (req.method === methods.POST) {
     r = request.post({ uri: newUrl, json: req.body });
@@ -31,19 +30,18 @@ function _proxy(req, res, url, method, body) {
     .pipe(r)
     .on("response", (response, body) => {
       if (response.statusCode !== 200) {
-        console.warn("No resp");
+        cb(response.statusCode, undefined);
         return;
       }
-      streamToJson(response, json => {
-        console.info(newUrl, json);
-      });
+      streamToJson(response, json => cb(undefined, json));
     })
-    .on("error", err => {
-      console.error(err);
-    })
+    .on("error", err => cb(err, undefined))
     .pipe(res);
 }
 
+const mapToArray = map => Array.from(map.entries());
+const arrayToMap = arr => new Map(arr);
+const savedUrls = new Map();
 module.exports = function createServiceFacadeMiddleware(apiUrl) {
   const re = new RegExp(`/${apiUrl}/(.*)`);
   return async (req, res, next) => {
@@ -54,13 +52,20 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
     }
 
     const { method, body } = req;
-    console.warn(match);
     const route = match[1];
 
     const savePath = path.join(__dirname, `${route}.json`);
     switch (method) {
       case methods.GET:
-        _proxy(req, res, route);
+        _proxy(req, res, route, (err, json) => {
+          savedUrls.set(route, {
+            json,
+            err,
+            lastUpdated: +new Date()
+          });
+
+          console.info(JSON.stringify(mapToArray(savedUrls)));
+        });
         return;
         try {
           const text = await readFileAsync(savePath);
