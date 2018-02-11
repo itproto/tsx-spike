@@ -1,12 +1,7 @@
 const shortid = require("shortid");
 const uid = () => shortid.generate();
-const { $tmplPage, $routesForm } = require("./admin-form");
-const arrToObject = (arr, prop) => {
-  return arr.reduce((res, item) => {
-    res[item[prop]] = item;
-    return res;
-  }, {});
-};
+const { $adminForm } = require("./components/admin-form");
+const { $bsPage } = require("./components/utils");
 
 let items = [
   {
@@ -33,7 +28,7 @@ let items = [
 const { streamToString, parseQS, updateItems } = require("./utils");
 
 const renderAdminGet = (req, res, items) => {
-  const $res = $tmplPage($routesForm(items));
+  const $res = $bsPage($adminForm(items));
   res.send($res);
 };
 

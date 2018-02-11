@@ -1,3 +1,5 @@
+const shortid = require("shortid");
+
 function streamToString(stream, cb) {
   const chunks = [];
   return stream
@@ -51,4 +53,24 @@ const updateItems = (items, formUpdate) => {
   });
 };
 
-module.exports = { streamToString, parseQS, getIn, updateItems };
+const arrToObject = (arr, prop) => {
+  return arr.reduce((res, item) => {
+    res[item[prop]] = item;
+    return res;
+  }, {});
+};
+
+const cuid = () => shortid.generate();
+const mapToArray = map => Array.from(map.entries());
+const arrayToMap = arr => new Map(arr);
+
+module.exports = {
+  streamToString,
+  parseQS,
+  getIn,
+  updateItems,
+  cuid,
+  arrToObject,
+  mapToArray,
+  arrayToMap
+};
