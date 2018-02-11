@@ -8,21 +8,22 @@ function streamToString(stream, cb) {
     })
     .on("end", () => {
       cb(undefined, chunks.join(""));
-    });
+    })
+    .on("error", cb)
+    .on("close", cb);
 }
+
+const _decodeQS = src => decodeURIComponent(src.replace(/\+/g, "%20"));
 
 const parseQS = qs => {
   if (qs === "") {
     return {};
   }
-  return JSON.parse(
-    '{"' +
-      decodeURI(qs)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"') +
-      '"}'
-  );
+  return qs.split("&").reduce((obj, src) => {
+    var p = src.split("=");
+    obj[_decodeQS(p[0])] = _decodeQS(p[1]);
+    return obj;
+  }, {});
 };
 
 const getIn = (...p) => o =>

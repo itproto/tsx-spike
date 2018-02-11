@@ -1,4 +1,20 @@
-const $bsPage = content => {
+const createAlert = type => (message = "Success", title = "") => {
+  return `
+  <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>${title}</strong>${message}
+  </div>`;
+};
+
+const alert = {
+  $success: createAlert("success"),
+  $warn: createAlert("warn"),
+  $error: createAlert("error")
+};
+
+const $bsPage = (content, $alert = "") => {
   return `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -10,6 +26,7 @@ const $bsPage = content => {
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
       </head>
       <body>
+        ${$alert}
         <content>${content}</content>
     
         <!-- jQuery first, then Tether, then Bootstrap JS. -->
@@ -20,4 +37,16 @@ const $bsPage = content => {
     </html>`;
 };
 
-module.exports = { $bsPage };
+const $bsCard = (header, title, $content) => {
+  return `
+    <div class="card">
+        <h3 class="card-header">${header}</h3>
+        <div class="card-block">
+        <h4 class="card-title">${title}</h4>
+          ${$content}
+        </div>
+    </div>
+    `;
+};
+
+module.exports = { $bsPage, $bsCard, alert };

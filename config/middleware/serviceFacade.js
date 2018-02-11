@@ -5,6 +5,7 @@ const methods = {
 const { cuid } = require("./utils");
 const { readMockFile, writeMockFile } = require("./mock");
 const { renderAdmin } = require("./admin");
+const { newRote } = require("./new-route");
 const { proxyRoute } = require("./proxy");
 
 const savedUrls = new Map();
@@ -19,13 +20,6 @@ const createRoute = (route, err, json) => {
   };
 };
 
-const renderCreate = (req, res, route) => {
-  return res.send(`<div>
-       <h1>${route}</h1>
-       <textarea>{'json': 'here'}</textarea>
-    </div`);
-};
-
 module.exports = function createServiceFacadeMiddleware(apiUrl) {
   const re = new RegExp(`/${apiUrl}/(.+)`);
   return function(req, res, next) {
@@ -37,19 +31,23 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
     const { method } = req;
     const route = match[1];
 
+    if (route.match("admin/newRoute")) {
+      return newRote(req, res);
+    }
     if (route.match("admin")) {
       return renderAdmin(req, res);
     }
     switch (method) {
       case methods.GET:
+      case methods.POST:
         proxyRoute(req, res, route, async (err, json) => {
           savedUrls.set(route, createRoute(route));
           if (err) {
             const mjson = await readMockFile(route);
-            if (!json) {
-              return renderCreate(req, res, route);
+            if (!json && !mjson) {
+              return res.redirect(`admin/newRoute?route=${route}`);
             }
-            return res.json(mjson);
+            return res.json(json || mjson); //TODO:
           }
           await writeMockFile(route, json);
           return res.json(json);
