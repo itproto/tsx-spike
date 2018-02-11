@@ -12,6 +12,7 @@ const { renderAdmin } = require("./admin");
 const { proxyRoute } = require("./proxy");
 
 const readFileAsync = promisify(fs.readFile);
+const writeFileAsync = promisify(fs.writeFile);
 
 const uid = () => shortid.generate();
 
@@ -29,21 +30,36 @@ const createRoute = (route, err, json) => {
   };
 };
 
+const getMockPath = route =>
+  path.join(__dirname, "resp", route.replace(/\//g, "$") + ".json");
+
 const readMockFile = async route => {
   try {
-    const filePath = path.join(
-      __dirname,
-      "resp",
-      route.replace("/", "$") + ".json"
-    );
+    const filePath = getMockPath(route);
     const text = await readFileAsync(filePath);
     return JSON.parse(text);
   } catch (err) {
     if (err.code === "ENOENT") {
-      return ["No Mock"];
+      return undefined;
     }
     throw err;
   }
+};
+const writeMockFile = async (route, json) => {
+  try {
+    const filePath = getMockPath(route);
+    const content = JSON.stringify(json, undefined, "\t");
+    await writeFileAsync(filePath, content);
+  } catch (err) {
+    throw err;
+  }
+};
+
+const renderCreate = (req, res, route) => {
+  return res.send(`<div>
+       <h1>${route}</h1>
+       <textarea>{'json': 'here'}</textarea>
+    </div`);
 };
 
 module.exports = function createServiceFacadeMiddleware(apiUrl) {
@@ -67,12 +83,14 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
           savedUrls.set(route, createRoute(route));
           if (err) {
             const mjson = await readMockFile(route);
+            if (!json) {
+              return renderCreate(req, res, route);
+            }
             return res.json(mjson);
           }
-
-          console.info(JSON.stringify(mapToArray(savedUrls)));
+          await writeMockFile(route, json);
+          return res.json(json);
         });
-        return;
         break;
       case methods.POST:
         res.json({ error: "NOT_IML" });
