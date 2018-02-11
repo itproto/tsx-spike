@@ -1,3 +1,4 @@
+const { $bsCard } = require("./utils");
 const $itemRenderer = ({ url, id, meta }) => {
   return `
     <div class="list-group-item justify-content-between">
@@ -13,14 +14,20 @@ const $itemRenderer = ({ url, id, meta }) => {
 
 const $adminForm = routes => {
   const $items = routes.map($itemRenderer).join("\n");
-  return `
+  return $bsCard(
+    "Routes admin",
+    "",
+    `
         <form method="post">
-            <div class="list-group">
+        <div class="form-group">
+            <label for="json">Json Response</label>
+            <div class="form-group">
                 ${$items}
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
-    `;
+    `
+  );
 };
 
 module.exports = { $adminForm };
