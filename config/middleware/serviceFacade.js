@@ -4,20 +4,18 @@ const methods = {
 };
 const path = require("path");
 const fs = require("fs");
+const shortid = require("shortid");
+
 const { promisify } = require("util");
 
 const request = require("request");
+const { renderAdmin } = require("./admin");
 
 const readFileAsync = promisify(fs.readFile);
-function streamToJson(stream, cb) {
-  const chunks = [];
-  stream.on("data", chunk => {
-    chunks.push(chunk.toString());
-  });
-  stream.on("end", () => {
-    cb(JSON.parse(chunks.join("")));
-  });
-}
+
+const { streamToString } = require("./utils");
+
+const uid = () => shortid.generate();
 
 function _proxy(req, res, route, cb) {
   const newUrl = "https://dog.ceo/api/" + route;
@@ -33,7 +31,7 @@ function _proxy(req, res, route, cb) {
         cb(response.statusCode, undefined);
         return;
       }
-      streamToJson(response, json => cb(undefined, json));
+      streamToString(response, (err, json) => cb(undefined, JSON.parse(json)));
     })
     .on("error", err => cb(err, undefined))
     .pipe(res);
@@ -50,15 +48,18 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
       next();
       return;
     }
-
     const { method, body } = req;
     const route = match[1];
 
+    if (route.match("admin")) {
+      return renderAdmin(req, res);
+    }
     const savePath = path.join(__dirname, `${route}.json`);
     switch (method) {
       case methods.GET:
         _proxy(req, res, route, (err, json) => {
           savedUrls.set(route, {
+            id: uid,
             json,
             err,
             lastUpdated: +new Date()
