@@ -10,8 +10,8 @@ const createAlert = type => (message = "Success", title = "") => {
 
 const alert = {
   $success: createAlert("success"),
-  $warn: createAlert("warn"),
-  $error: createAlert("error")
+  $warn: createAlert("warning"),
+  $error: createAlert("danger")
 };
 
 const $bsPage = (content, $alert = "") => {

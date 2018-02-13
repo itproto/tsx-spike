@@ -8,6 +8,9 @@ const { renderAdmin } = require("./admin");
 const { newRote } = require("./new-route");
 const { proxyRoute } = require("./proxy");
 
+const { promisify } = require("util");
+const proxyRouteAsync = promisify(proxyRoute);
+
 const savedUrls = new Map();
 
 const createRoute = (route, err, json) => {
@@ -22,7 +25,7 @@ const createRoute = (route, err, json) => {
 
 module.exports = function createServiceFacadeMiddleware(apiUrl) {
   const re = new RegExp(`/${apiUrl}/(.+)`);
-  return function(req, res, next) {
+  return async function(req, res, next) {
     const match = req.url.replace(/\/$/, "").match(re);
     if (!match) {
       next();
@@ -37,25 +40,22 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
     if (route.match("admin")) {
       return renderAdmin(req, res);
     }
+    let json;
     switch (method) {
       case methods.GET:
       case methods.POST:
-        proxyRoute(req, res, route, async (err, json) => {
+        try {
+          json = await proxyRouteAsync(req, res, route); //, async (err, json) => {
           savedUrls.set(route, createRoute(route));
-          if (err) {
-            const mjson = await readMockFile(route);
-            if (!json && !mjson) {
-              return res.redirect(`admin/newRoute?route=${route}`);
-            }
-            return res.json(json || mjson); //TODO:
-          }
           await writeMockFile(route, json);
           return res.json(json);
-        });
-        break;
-      case methods.POST:
-        res.json({ error: "NOT_IML" });
-        break;
+        } catch (error) {
+          const mjson = await readMockFile(route);
+          if (!json && !mjson) {
+            return res.redirect(`admin/newRoute?route=${route}`);
+          }
+          return res.json(json || mjson); //TODO:
+        }
       default:
         next();
     }

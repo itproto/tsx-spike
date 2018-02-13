@@ -1,7 +1,7 @@
 const request = require("request");
-const { streamToString } = require("./utils");
+const { streamToStringAsync } = require("./utils");
 
-function proxyRoute(req, res, route, cb) {
+const proxyRoute = (req, res, route, cb) => {
   const newUrl = "https://dog.ceo/api/" + route;
   let r = request(newUrl);
   if (req.method === "POST") {
@@ -10,16 +10,21 @@ function proxyRoute(req, res, route, cb) {
 
   req
     .pipe(r)
-    .on("response", response => {
+    .on("response", async response => {
       if (response.statusCode !== 200) {
         cb(response.statusCode, undefined);
         return;
       }
-      streamToString(response, (err, json) => cb(undefined, JSON.parse(json)));
+      try {
+        const json = await streamToStringAsync(response);
+        cb(undefined, JSON.parse(json));
+      } catch (error) {
+        cb(error);
+      }
     })
     .on("error", err => cb(err, undefined));
   //.pipe(res);
-}
+};
 
 module.exports = {
   proxyRoute

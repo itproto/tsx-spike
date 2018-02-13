@@ -3,6 +3,8 @@ const uid = () => shortid.generate();
 const { $adminForm } = require("./components/admin-form");
 const { $bsPage, alert } = require("./components/utils");
 
+const { parseQS, updateItems, streamToStringAsync } = require("./utils");
+
 let items = [
   {
     url: "/foo",
@@ -25,20 +27,22 @@ let items = [
     }
   }
 ];
-const { streamToString, parseQS, updateItems } = require("./utils");
 
 const renderAdminGet = (req, res, items, $alert) => {
   const $res = $bsPage($adminForm(items), $alert);
   res.send($res);
 };
 
-const renderAdmin = (req, res) => {
+const renderAdmin = async (req, res) => {
   if (req.method === "POST") {
-    streamToString(req, (err, formData) => {
+    try {
+      const formData = await streamToStringAsync(req);
       const formUpdate = parseQS(formData);
       items = updateItems(items, formUpdate);
       return renderAdminGet(req, res, items, alert.$success());
-    });
+    } catch (error) {
+      return renderAdminGet(req, res, items, alert.$error(err));
+    }
   } else {
     return renderAdminGet(req, res, items);
   }

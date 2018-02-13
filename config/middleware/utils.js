@@ -65,8 +65,11 @@ const cuid = () => shortid.generate();
 const mapToArray = map => Array.from(map.entries());
 const arrayToMap = arr => new Map(arr);
 
+const { promisify } = require("util");
+const streamToStringAsync = promisify(streamToString);
+
 module.exports = {
-  streamToString,
+  streamToStringAsync,
   parseQS,
   getIn,
   updateItems,
