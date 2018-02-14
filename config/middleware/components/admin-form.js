@@ -3,13 +3,15 @@ const $itemRenderer = ({ url, id, meta }) => {
   return `
     <div class="list-group-item justify-content-between">
         <div class="input-group">
+          <input type="text" class="form-control" value="${url}">
+        </div>
+    </div>`;
+  /*
           <span class="input-group-addon"><label><input name="${id}_proxy" type="checkbox"
            ${meta.proxy ? "checked" : ""}></label> proxy</span>
           <span class="input-group-addon"><label><input name="${id}_mock" type="checkbox"
            ${meta.mock ? "checked" : ""}></label> mock</span>
-          <input type="text" class="form-control" value="${url}">
-        </div>
-    </div>`;
+    */
 };
 
 const $adminForm = routes => {

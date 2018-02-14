@@ -11,6 +11,8 @@ const { proxyRoute } = require("./proxy");
 const { promisify } = require("util");
 const proxyRouteAsync = promisify(proxyRoute);
 
+const { updateModel } = require("./routeSettings");
+
 const savedUrls = new Map();
 
 const createRoute = (route, err, json) => {
@@ -45,12 +47,14 @@ module.exports = function createServiceFacadeMiddleware(apiUrl) {
       case methods.GET:
       case methods.POST:
         try {
-          json = await proxyRouteAsync(req, res, route); //, async (err, json) => {
+          json = await proxyRouteAsync(req, res, route);
           savedUrls.set(route, createRoute(route));
           await writeMockFile(route, json);
+          await updateModel(route, json);
           return res.json(json);
         } catch (error) {
           const mjson = await readMockFile(route);
+          await updateModel(route, undefined, error);
           if (!json && !mjson) {
             return res.redirect(`admin/newRoute?route=${route}`);
           }
