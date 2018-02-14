@@ -12,6 +12,7 @@ $blue: #056ef0;
 
 @custom-media --viewport-medium (width <= 50rem);
 @media (--viewport-medium) {
+  color: green;
 }
 
 @custom-selector :--button button, .button;
@@ -21,8 +22,6 @@ $blue: #056ef0;
 }
 .App {
   text-align: center;
-  foo-bar: 33;
-  color: #4fd;
 
   & .App-header {
     background-color: $blue;
