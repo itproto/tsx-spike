@@ -3,7 +3,11 @@ import "./App.css";
 
 class App extends React.Component<any, any> {
   public render() {
-    return <div className="App">Hello World</div>;
+    return (
+      <div>
+        <h1>Contact Manager</h1>
+      </div>
+    );
   }
 }
 
