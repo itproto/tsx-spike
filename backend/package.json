@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "description": "contacts api server",
+  "version": "0.0.0",
+  "homepage": "",
+  "main": "src",
+  "keywords": [
+    "feathers"
+  ],
+  "author": {
+    "name": "itproto",
+    "email": "itprotoltd@gmail.com"
+  },
+  "contributors": [],
+  "bugs": {},
+  "directories": {
+    "lib": "src",
+    "test": "test/"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "yarn": ">= 0.18.0"
+  },
+  "scripts": {
+    "test": "npm run eslint && npm run mocha",
+    "eslint": "eslint src/. test/. --config .eslintrc.json",
+    "start": "node src/",
+    "mocha": "mocha test/ --recursive --exit"
+  },
+  "devDependencies": {
+    "eslint": "^4.17.0",
+    "mocha": "^5.0.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2"
+  }
+}
