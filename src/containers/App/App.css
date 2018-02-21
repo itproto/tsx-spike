@@ -1,4 +1,4 @@
-$blue: #056ef0;
+$blue: blue;
 /*http://cssnext.io/features/*/
 :root {
   --fontSize: 1rem;
@@ -22,6 +22,7 @@ $blue: #056ef0;
 }
 .App {
   text-align: center;
+  color: $blue;
 
   & .App-header {
     background-color: $blue;
