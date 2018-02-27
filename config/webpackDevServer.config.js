@@ -7,6 +7,7 @@ const config = require("./webpack.config.dev");
 const paths = require("./paths");
 
 const serviceFacadeMiddleware = require("./middleware/serviceFacade");
+const fakeMiddleware = require("./fake-rest-middleware");
 
 const protocol = process.env.HTTPS === "true" ? "https" : "http";
 const host = process.env.HOST || "0.0.0.0";
@@ -103,11 +104,14 @@ module.exports = function(proxy, allowedHost) {
       app.use(noopServiceWorkerMiddleware());
       app.use(serviceFacadeMiddleware("api"));
 
+      app.use(fakeMiddleware("tapi"));
+
       app.use(
         "/q",
         graphqlExpress(req => ({
           schema,
-          context: req.session
+          context: req.session,
+          graphiql: true
         }))
       );
     }
