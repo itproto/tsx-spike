@@ -11,6 +11,9 @@ const serviceFacadeMiddleware = require("./middleware/serviceFacade");
 const protocol = process.env.HTTPS === "true" ? "https" : "http";
 const host = process.env.HOST || "0.0.0.0";
 
+const graphqlExpress = require("express-graphql");
+const schema = require("./gql/schema");
+
 module.exports = function(proxy, allowedHost) {
   return {
     // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
@@ -99,6 +102,14 @@ module.exports = function(proxy, allowedHost) {
       // https://github.com/facebookincubator/create-react-app/issues/2272#issuecomment-302832432
       app.use(noopServiceWorkerMiddleware());
       app.use(serviceFacadeMiddleware("api"));
+
+      app.use(
+        "/q",
+        graphqlExpress(req => ({
+          schema,
+          context: req.session
+        }))
+      );
     }
   };
 };
