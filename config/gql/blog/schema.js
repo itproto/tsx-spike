@@ -2,7 +2,7 @@
 const fetch = require("node-fetch");
 const BASE_URL = "http://localhost:3000/tapi/";
 
-function fetchApi(route) {
+function rest(route) {
   return fetch(`${BASE_URL}${route}`).then(res => res.json());
 }
 
@@ -26,9 +26,45 @@ const {
 } = require("graphql");
 
 //TYPES
-// user { "id": 1, "name": "User 1" },
-// post   { "id": 2, "title": "Post 2", "date": "2017-02-12", "userId": 2 },
 // comment   { "id": 3, "content": "Comment 3", "userId": 6, "postId": 1 },
+const CommentType = new GraphQLObjectType({
+  name: "Comment",
+  fields: () => ({
+    id: {
+      type: GraphQLID
+    },
+    content: {
+      type: GraphQLString
+    },
+    user: {
+      type: UserType,
+      resolve: comment => rest(`/users/${comment.userId}`)
+    },
+    post: {
+      type: PostType,
+      resolve: comment => rest(`/posts/${comment.postId}`)
+    }
+  })
+});
+
+// post   { "id": 2, "title": "Post 2", "date": "2017-02-12", "userId": 2 },
+const PostType = new GraphQLObjectType({
+  name: "Post",
+  fields: () => ({
+    id: {
+      type: GraphQLID
+    },
+    title: {
+      type: GraphQLString
+    },
+    user: {
+      type: UserType,
+      resolve: post => rest(`/users/${post.userId}`)
+    }
+  })
+});
+
+// user { "id": 1, "name": "User 1" },
 const UserType = new GraphQLObjectType({
   name: "User",
   fields: () => ({
@@ -41,34 +77,18 @@ const UserType = new GraphQLObjectType({
     },
     age: {
       type: GraphQLInt
+    },
+    posts: {
+      type: new GraphQLList(PostType),
+      resolve: user => {
+        return rest("posts").then(res => {
+          const matchedPosts = res.filter(post => post.userId == user.id);
+          return matchedPosts;
+        });
+      }
     }
   })
 });
-
-/*
-const PersonType = new GraphQLObjectType({
-  name: "Person",
-  description: "Somebody that you used to know",
-  fields: () => ({
-    firstName: {
-      type: GraphQLString,
-      resolve: person => person.first_name
-    },
-    lastName: {
-      type: GraphQLString,
-      resolve: person => person.last_name
-    },
-    email: { type: GraphQLString },
-    id: { type: GraphQLString },
-    username: { type: GraphQLString },
-    friends: {
-      type: new GraphQLList(PersonType),
-      resolve: person => {
-        person;
-      } // Fetch the friends with the URLs `person.friends`,
-    }
-  })
-});*/
 
 //Query
 const QueryType = new GraphQLObjectType({
@@ -76,14 +96,30 @@ const QueryType = new GraphQLObjectType({
   fields: () => ({
     allUsers: {
       type: new GraphQLList(UserType),
-      resolve: () => fetchApi("/users/")
+      resolve: () => rest("/users/")
     },
     user: {
       type: UserType,
       args: {
         id: { type: GraphQLID }
       },
-      resolve: (root, args) => fetchApi(`/users/${args.id}`)
+      resolve: (root, args) => rest(`/users/${args.id}`)
+    },
+
+    post: {
+      type: PostType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve: (root, args) => rest(`/posts/${args.id}`)
+    },
+
+    comment: {
+      type: CommentType,
+      args: {
+        id: { type: GraphQLID }
+      },
+      resolve: (root, args) => rest(`/comments/${args.id}`)
     }
   })
 });
