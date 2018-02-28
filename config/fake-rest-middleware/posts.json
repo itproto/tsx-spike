@@ -1,0 +1,7 @@
+[
+  { "id": 1, "title": "Post 1", "date": "2017-01-12", "userId": 2 },
+  { "id": 2, "title": "Post 2", "date": "2017-02-12", "userId": 2 },
+  { "id": 3, "title": "Post 3", "date": "2017-03-12", "userId": 1 },
+  { "id": 4, "title": "Post 4", "date": "2017-04-12", "userId": 3 },
+  { "id": 5, "title": "Post 5", "date": "2017-05-12", "userId": 3 }
+]

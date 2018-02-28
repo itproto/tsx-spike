@@ -1,0 +1,6 @@
+[
+  { "id": 1, "content": "Comment 1", "userId": 4, "postId": 1 },
+  { "id": 2, "content": "Comment 2", "userId": 5, "postId": 1 },
+  { "id": 3, "content": "Comment 3", "userId": 6, "postId": 1 },
+  { "id": 4, "content": "Comment 4", "userId": 5, "postId": 2 }
+]

@@ -13,7 +13,7 @@ const protocol = process.env.HTTPS === "true" ? "https" : "http";
 const host = process.env.HOST || "0.0.0.0";
 
 const graphqlExpress = require("express-graphql");
-const schema = require("./gql/schema");
+const schema = require("./gql/blog/schema");
 
 module.exports = function(proxy, allowedHost) {
   return {
