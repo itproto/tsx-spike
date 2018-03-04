@@ -1,8 +1,8 @@
-// API
-const fetch = require("isomorphic-fetch");
+// @ts-nocheck
+
 const BASE_URL = "http://localhost:3000/tapi/";
 
-function rest(route) {
+function rest(route: string) {
   return fetch(`${BASE_URL}${route}`).then(res => res.json());
 }
 
@@ -17,13 +17,13 @@ function fetchUserById(relativeURL) {
 }
 */
 
-const {
+import {
   GraphQLList,
   GraphQLObjectType,
   GraphQLString,
   GraphQLID,
   GraphQLInt
-} = require("graphql");
+} from "graphql";
 
 //TYPES
 // comment   { "id": 3, "content": "Comment 3", "userId": 6, "postId": 1 },
@@ -124,9 +124,14 @@ const QueryType = new GraphQLObjectType({
   })
 });
 
-const { GraphQLSchema } = require("graphql");
-
+import { graphql, GraphQLSchema } from "graphql";
 //Schema
-module.exports = new GraphQLSchema({
+const schema = new GraphQLSchema({
   query: QueryType
 });
+
+const handler = query => {
+  return graphql(schema, query);
+};
+
+export { schema, handler };
