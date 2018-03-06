@@ -1,13 +1,10 @@
 import * as React from "react";
 import "./App.css";
-/*
-import axios from "axios";*/
 
 import { handler } from "../../gql/schema";
 import { comments } from "../../gql/queries";
 
 const query = comments({ commentId: 1 });
-
 class App extends React.Component<any, any> {
   componentDidMount() {
     handler(query).then(resp => {

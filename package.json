@@ -22,9 +22,13 @@
   "scripts": {
     "start": "node scripts/start.js",
     "start:inspect": "node --inspect scripts/start.js",
-    "start:watch": "nodemon --inspect --watch config scripts/start.js --ignore resp/  scripts/start.js",
+    "start:watch":
+      "nodemon --inspect --watch config scripts/start.js --ignore resp/  scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "start:myLoader": "node --inspect -r ts-node/register scripts/start",
+    "foo":
+      "NODE_ENV=dev node --inspect --require ts-node/register node_modules/.bin/webpack --watch --config config/webpack.config.dev"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
@@ -36,6 +40,7 @@
     "@types/react-dom": "^16.0.3",
     "@types/react-redux": "^5.0.14",
     "@types/react-router-dom": "^4.2.4",
+    "@types/webpack": "^3.8.8",
     "autoprefixer": "7.1.6",
     "caniuse-lite": "^1.0.30000697",
     "case-sensitive-paths-webpack-plugin": "2.1.1",
@@ -75,7 +80,7 @@
     "tslint": "^5.7.0",
     "tslint-config-prettier": "^1.7.0",
     "tslint-react": "^3.2.0",
-    "typescript": "^2.7.1",
+    "typescript": "^2.7.2",
     "url-loader": "0.6.2",
     "webpack": "3.8.1",
     "webpack-dev-server": "2.9.4",
@@ -83,12 +88,8 @@
     "whatwg-fetch": "2.0.3"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx,ts,tsx}"
-    ],
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
+    "collectCoverageFrom": ["src/**/*.{js,jsx,ts,tsx}"],
+    "setupFiles": ["<rootDir>/config/polyfills.js"],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.ts?(x)",
       "<rootDir>/src/**/?(*.)(spec|test).ts?(x)"
@@ -98,7 +99,8 @@
     "transform": {
       "^.+\\.tsx?$": "<rootDir>/config/jest/typescriptTransform.js",
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
-      "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+      "^(?!.*\\.(js|jsx|mjs|css|json)$)":
+        "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|ts|tsx)$"
@@ -126,9 +128,7 @@
     }
   },
   "babel": {
-    "presets": [
-      "react-app"
-    ]
+    "presets": ["react-app"]
   },
   "eslintConfig": {
     "extends": "react-app",
