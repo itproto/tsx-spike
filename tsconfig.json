@@ -12,15 +12,12 @@
 
     /*strict*/
     "strict": true,
-    /*strict-additional*/
+    /*strict++*/
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
-    /*strict-misc*/
-    "forceConsistentCasingInFileNames": true,
-    "noEmitOnError": false
+    "forceConsistentCasingInFileNames": true
   },
   "exclude": [
     "node_modules",

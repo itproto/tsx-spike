@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.2.0",
+    "react": "^16.4.1",
     "react-dom": "^16.2.0",
-    "react-redux": "^5.0.6",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
-    "redux": "^3.7.2",
+    "redux": "^4.0.0",
     "reselect": "^3.0.1",
+    "typesafe-actions": "^2.0.4",
     "utility-types": "^1.0.0"
   },
   "scripts": {
@@ -16,14 +17,15 @@
     "start:inspect": "node --inspect scripts/start.js",
     "start:watch": "nodemon --inspect --watch config scripts/start.js --ignore resp/  scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "lint-fix": "tslint --fix -t verbose --project ."
   },
   "devDependencies": {
     "@types/jest": "^22.1.1",
     "@types/node": "^9.4.0",
-    "@types/react": "^16.0.36",
-    "@types/react-dom": "^16.0.3",
-    "@types/react-redux": "^5.0.14",
+    "@types/react": "^16.4.6",
+    "@types/react-dom": "^16.0.6",
+    "@types/react-redux": "^5.0.20",
     "@types/react-router-dom": "^4.2.4",
     "autoprefixer": "7.1.6",
     "caniuse-lite": "^1.0.30000697",
